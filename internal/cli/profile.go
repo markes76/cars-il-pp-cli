@@ -15,5 +15,5 @@ func addProfile(root *cobra.Command, app *App) {
 	}
 	cmd.Flags().String("name", "default", "saved profile name")
 	root.AddCommand(cmd)
-	_ = client.SourceAll
+	_ = client.SourceYad2
 }

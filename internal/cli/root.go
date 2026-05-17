@@ -40,10 +40,10 @@ type App struct {
 }
 
 func NewRootCommand() (*cobra.Command, *App) {
-	app := &App{ExitCode: client.ExitSuccess, DataSource: "auto", Source: client.SourceAll, Limit: 20, Currency: "ILS"}
+	app := &App{ExitCode: client.ExitSuccess, DataSource: "auto", Source: client.SourceYad2, Limit: 20, Currency: "ILS"}
 	root := &cobra.Command{
 		Use:           "cars-il",
-		Short:         "Israeli used-car market intelligence for Yad2 and AutoTrader IL",
+		Short:         "Israeli used-car market intelligence for Yad2 Cars",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
@@ -86,7 +86,7 @@ func NewRootCommand() (*cobra.Command, *App) {
 	root.PersistentFlags().BoolVar(&app.NoInput, "no-input", false, "never prompt for input")
 	root.PersistentFlags().BoolVar(&app.NoColor, "no-color", false, "disable ANSI")
 	root.PersistentFlags().StringVar(&app.DataSource, "data-source", "auto", "[auto|local|live]")
-	root.PersistentFlags().StringVar(&app.Source, "source", client.SourceAll, "[yad2|autotrader|all]")
+	root.PersistentFlags().StringVar(&app.Source, "source", client.SourceYad2, "[yad2]")
 	root.PersistentFlags().IntVar(&app.Limit, "limit", 20, "max results")
 	root.PersistentFlags().StringVar(&app.OutputFile, "output-file", "", "write output to file")
 	root.PersistentFlags().StringVar(&app.DBPath, "db", "", "SQLite store path")

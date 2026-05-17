@@ -1,15 +1,13 @@
 package client
 
 import (
-	"errors"
 	"strings"
 	"time"
 )
 
 const (
-	SourceYad2       = "yad2"
-	SourceAutoTrader = "autotrader"
-	SourceAll        = "all"
+	SourceYad2 = "yad2"
+	SourceAll  = "all"
 )
 
 type Listing struct {
@@ -82,37 +80,17 @@ type CarSource interface {
 }
 
 type Dispatcher struct {
-	Yad2       CarSource
-	AutoTrader CarSource
+	Yad2 CarSource
 }
 
 func (d Dispatcher) Search(params SearchParams) ([]Listing, PaginationState, error) {
 	source := NormalizeSource(params.Source)
-	var out []Listing
-	var state PaginationState
-	var errs []error
-	if source == SourceYad2 || source == SourceAll {
-		listings, pagination, err := d.Yad2.Search(params)
-		if err != nil {
-			errs = append(errs, err)
-		}
-		out = append(out, listings...)
-		if pagination.Total > state.Total {
-			state = pagination
-		}
+	if source != SourceYad2 && source != SourceAll {
+		return nil, PaginationState{}, InvalidArgs("this build supports Yad2 only; use --source yad2 or omit --source")
 	}
-	if source == SourceAutoTrader || source == SourceAll {
-		listings, pagination, err := d.AutoTrader.Search(params)
-		if err != nil {
-			errs = append(errs, err)
-		}
-		out = append(out, listings...)
-		if pagination.Total > state.Total {
-			state = pagination
-		}
-	}
-	if len(out) == 0 && len(errs) > 0 {
-		return nil, state, errors.Join(errs...)
+	out, state, err := d.Yad2.Search(params)
+	if err != nil {
+		return nil, state, err
 	}
 	if params.Limit > 0 && len(out) > params.Limit {
 		out = out[:params.Limit]
@@ -123,11 +101,9 @@ func (d Dispatcher) Search(params SearchParams) ([]Listing, PaginationState, err
 func NormalizeSource(source string) string {
 	switch strings.ToLower(strings.TrimSpace(source)) {
 	case "", "all", "auto":
-		return SourceAll
+		return SourceYad2
 	case "yad2", "יד2":
 		return SourceYad2
-	case "autotrader", "auto-trader":
-		return SourceAutoTrader
 	default:
 		return source
 	}

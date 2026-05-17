@@ -18,8 +18,7 @@ func addSync(root *cobra.Command, app *App) {
 			params.Source, params.Limit, params.DataSource = base.Source, base.Limit, "live"
 			if app.DryRun {
 				yad2Count := params.Limit
-				autoCount := int(float64(params.Limit) * 0.6)
-				printHuman(app.out, app.Quiet, "Would sync %d listings from yad2, %d from autotrader\n", yad2Count, autoCount)
+				printHuman(app.out, app.Quiet, "Would sync %d listings from yad2\n", yad2Count)
 				app.ExitCode = client.ExitDryRun
 				return nil
 			}

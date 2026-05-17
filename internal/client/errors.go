@@ -42,10 +42,6 @@ func RateLimited(message string) error {
 	return AppError{Code: "RATE_LIMITED", Message: message, ExitCode: ExitRateLimited}
 }
 
-func SourceUnavailable(message string) error {
-	return AppError{Code: "SOURCE_UNAVAILABLE", Message: message, ExitCode: ExitNotFound}
-}
-
 func ReadOnlyError() error {
 	return AppError{Code: "READ_ONLY", Message: "cars-il-pp-cli is a read-only tool.", ExitCode: ExitInvalidArgs}
 }

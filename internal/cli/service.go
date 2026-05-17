@@ -18,13 +18,17 @@ func NewService(db *store.DB) Service {
 	return Service{
 		DB: db,
 		Dispatcher: client.Dispatcher{
-			Yad2:       client.NewYad2Client(),
-			AutoTrader: client.NewAutoTraderClient(),
+			Yad2: client.NewYad2Client(),
 		},
 	}
 }
 
 func (s Service) Search(params client.SearchParams) ([]client.Listing, error) {
+	var err error
+	params, err = yad2OnlyParams(params)
+	if err != nil {
+		return nil, err
+	}
 	switch params.DataSource {
 	case "local":
 		return searchDomainListings(s.DB, params)
@@ -54,13 +58,15 @@ func (s Service) Get(id string, dataSource string) (client.Listing, error) {
 			return client.Listing{}, err
 		}
 	}
-	if strings.HasPrefix(id, "autotrader-") {
-		return s.Dispatcher.AutoTrader.GetListing(id)
-	}
 	return s.Dispatcher.Yad2.GetListing(id)
 }
 
 func (s Service) Sync(params client.SearchParams) (SyncResult, error) {
+	var err error
+	params, err = yad2OnlyParams(params)
+	if err != nil {
+		return SyncResult{}, err
+	}
 	liveParams := params
 	liveParams.DataSource = "live"
 	scope := syncScope(params)
@@ -104,6 +110,16 @@ func (s Service) Sync(params client.SearchParams) (SyncResult, error) {
 		}
 	}
 	return result, nil
+}
+
+func yad2OnlyParams(params client.SearchParams) (client.SearchParams, error) {
+	switch client.NormalizeSource(params.Source) {
+	case client.SourceYad2, client.SourceAll:
+		params.Source = client.SourceYad2
+		return params, nil
+	default:
+		return params, client.InvalidArgs("this build supports Yad2 only; use --source yad2 or omit --source")
+	}
 }
 
 func syncScope(params client.SearchParams) string {

@@ -10,7 +10,7 @@ func addSearch(root *cobra.Command, app *App) {
 	var params client.SearchParams
 	cmd := &cobra.Command{
 		Use:   "search",
-		Short: "Search Yad2 and AutoTrader IL car listings",
+		Short: "Search Yad2 car listings",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			base := baseParams(app)
 			params.Source, params.Limit, params.DataSource = base.Source, base.Limit, base.DataSource

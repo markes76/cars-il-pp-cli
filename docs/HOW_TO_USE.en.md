@@ -130,17 +130,7 @@ The score combines:
 ./cars-il-pp-cli --db "$DB" compare --ids yad2-1234,yad2-5678 --data-source local
 ```
 
-## 8. AutoTrader IL Behavior
-
-As of 2026-05-17, `https://autotrader.co.il/` is a WordPress import/services site. It does not expose a used-car listings catalogue. The CLI therefore returns:
-
-```json
-{"error":{"code":"SOURCE_UNAVAILABLE","message":"AutoTrader IL currently exposes WordPress service pages, not a public used-car listing catalogue"}}
-```
-
-That is expected behavior, not a crash.
-
-## 9. Troubleshooting
+## 8. Troubleshooting
 
 Store is empty:
 
@@ -168,7 +158,7 @@ rm -f "$DB" "$DB-shm" "$DB-wal"
 ./cars-il-pp-cli --db "$DB" doctor --json
 ```
 
-## 10. Use It As A Claude MCP Server
+## 9. Use It As A Claude MCP Server
 
 Build, install, or use the already-built MCP binary.
 
@@ -201,8 +191,7 @@ Add:
       "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
       "args": [],
       "env": {
-        "CARS_IL_YAD2_COOKIE": "",
-        "CARS_IL_AUTOTRADER_COOKIE": ""
+        "CARS_IL_YAD2_COOKIE": ""
       }
     }
   }
@@ -223,10 +212,9 @@ claude mcp add-json cars-il '{
   "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
   "args": [],
   "env": {
-    "CARS_IL_YAD2_COOKIE": "",
-    "CARS_IL_AUTOTRADER_COOKIE": ""
+    "CARS_IL_YAD2_COOKIE": ""
   }
 }'
 ```
 
-Safety: the MCP server is read-only against remote sites. `sync` writes only to the local SQLite cache.
+Safety: the MCP server is read-only against Yad2. `sync` writes only to the local SQLite cache.

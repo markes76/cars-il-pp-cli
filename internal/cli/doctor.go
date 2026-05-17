@@ -10,16 +10,15 @@ import (
 )
 
 type DoctorResult struct {
-	Yad2Reachable       bool   `json:"yad2_reachable"`
-	AutoTraderReachable bool   `json:"autotrader_reachable"`
-	StorePath           string `json:"store_path"`
-	StoreReadable       bool   `json:"store_readable"`
-	ListingCount        int    `json:"listing_count"`
-	LastSyncedAt        string `json:"last_synced_at,omitempty"`
-	Version             string `json:"version"`
-	Yad2AuthConfigured  bool   `json:"yad2_auth_configured"`
-	AutoAuthConfigured  bool   `json:"autotrader_auth_configured"`
-	Warning             string `json:"warning,omitempty"`
+	Yad2Reachable      bool   `json:"yad2_reachable"`
+	StorePath          string `json:"store_path"`
+	StoreReadable      bool   `json:"store_readable"`
+	ListingCount       int    `json:"listing_count"`
+	LastSyncedAt       string `json:"last_synced_at,omitempty"`
+	Version            string `json:"version"`
+	Yad2AuthConfigured bool   `json:"yad2_auth_configured"`
+	Source             string `json:"source"`
+	Warning            string `json:"warning,omitempty"`
 }
 
 func addDoctor(root *cobra.Command, app *App) {
@@ -29,9 +28,8 @@ func addDoctor(root *cobra.Command, app *App) {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			result := DoctorResult{StorePath: app.Service.DB.Path(), StoreReadable: true, Version: "1.0.0"}
 			result.Yad2Reachable = canReach("https://www.yad2.co.il/vehicles/cars")
-			result.AutoTraderReachable = canReach("https://autotrader.co.il/")
 			result.Yad2AuthConfigured = os.Getenv("CARS_IL_YAD2_COOKIE") != ""
-			result.AutoAuthConfigured = os.Getenv("CARS_IL_AUTOTRADER_COOKIE") != ""
+			result.Source = client.SourceYad2
 			count, err := app.Service.DB.CountListings()
 			if err != nil {
 				result.StoreReadable = false
@@ -47,16 +45,15 @@ func addDoctor(root *cobra.Command, app *App) {
 				return app.formatter().WriteValue(result)
 			}
 			printHuman(app.out, app.Quiet, "yad2.co.il reachable:       %v\n", result.Yad2Reachable)
-			printHuman(app.out, app.Quiet, "autotrader.co.il reachable: %v\n", result.AutoTraderReachable)
 			printHuman(app.out, app.Quiet, "store:                      %s\n", result.StorePath)
-			printHuman(app.out, app.Quiet, "config/auth:                yad2=%v autotrader=%v\n", result.Yad2AuthConfigured, result.AutoAuthConfigured)
+			printHuman(app.out, app.Quiet, "config/auth:                yad2=%v\n", result.Yad2AuthConfigured)
 			printHuman(app.out, app.Quiet, "version:                    %s\n", result.Version)
 			printHuman(app.out, app.Quiet, "listings:                   %d\n", result.ListingCount)
 			if result.Warning != "" {
 				printHuman(app.out, app.Quiet, "warning:                    %s\n", result.Warning)
 			}
-			if !result.Yad2Reachable || !result.AutoTraderReachable {
-				return client.APIError("one or more sources are unreachable")
+			if !result.Yad2Reachable {
+				return client.APIError("Yad2 is unreachable")
 			}
 			return nil
 		},

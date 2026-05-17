@@ -397,19 +397,28 @@ func matchesParams(l Listing, p SearchParams) bool {
 			return false
 		}
 	}
-	if p.YearMin > 0 && l.Year > 0 && l.Year < p.YearMin {
+	if (p.YearMin > 0 || p.YearMax > 0) && l.Year == 0 {
 		return false
 	}
-	if p.YearMax > 0 && l.Year > 0 && l.Year > p.YearMax {
+	if p.YearMin > 0 && l.Year < p.YearMin {
 		return false
 	}
-	if p.PriceMin > 0 && l.Price > 0 && l.Price < p.PriceMin {
+	if p.YearMax > 0 && l.Year > p.YearMax {
 		return false
 	}
-	if p.PriceMax > 0 && l.Price > 0 && l.Price > p.PriceMax {
+	if (p.PriceMin > 0 || p.PriceMax > 0) && l.Price == 0 {
 		return false
 	}
-	if p.MileageMax > 0 && l.Mileage > 0 && l.Mileage > p.MileageMax {
+	if p.PriceMin > 0 && l.Price < p.PriceMin {
+		return false
+	}
+	if p.PriceMax > 0 && l.Price > p.PriceMax {
+		return false
+	}
+	if p.MileageMax > 0 && l.Mileage == 0 {
+		return false
+	}
+	if p.MileageMax > 0 && l.Mileage > p.MileageMax {
 		return false
 	}
 	if p.City != "" && l.City != "" && !containsFold(l.City, p.City) {

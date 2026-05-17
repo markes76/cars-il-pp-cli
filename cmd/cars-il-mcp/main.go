@@ -109,13 +109,13 @@ func callTool(service commands.Service, name string, raw json.RawMessage) (inter
 		return map[string]interface{}{
 			"name":       "cars-il-pp-mcp",
 			"version":    version,
-			"sources":    []string{client.SourceYad2, client.SourceAutoTrader},
+			"sources":    []string{client.SourceYad2},
 			"language":   "he",
 			"currency":   "ILS",
 			"read_only":  true,
 			"safety":     []string{"GET-only remote access", "no phone-number extraction", "no account scraping", "cookies only via environment variables"},
-			"autotrader": "Current public autotrader.co.il is a WordPress import/services site, not a public used-car listing catalogue.",
-			"usage_hint": "Use search live for discovery, then sync a small cohort before market/deal/price_history analytics.",
+			"scope":      "Yad2 Cars only.",
+			"usage_hint": "Use search live for discovery, then sync a small Yad2 cohort before market/deal/price_history analytics.",
 		}, nil
 	case "search":
 		return service.Search(params)
@@ -451,12 +451,11 @@ func doctor(service commands.Service) (map[string]interface{}, error) {
 	}
 	lastSynced, _ := service.DB.LastSyncedAt()
 	return map[string]interface{}{
-		"yad2_reachable":             checkURL("https://www.yad2.co.il/vehicles/cars"),
-		"autotrader_reachable":       checkURL("https://autotrader.co.il/"),
-		"listing_count":              count,
-		"last_synced_at":             lastSynced,
-		"yad2_auth_configured":       os.Getenv("CARS_IL_YAD2_COOKIE") != "",
-		"autotrader_auth_configured": os.Getenv("CARS_IL_AUTOTRADER_COOKIE") != "",
-		"read_only":                  true,
+		"yad2_reachable":       checkURL("https://www.yad2.co.il/vehicles/cars"),
+		"listing_count":        count,
+		"last_synced_at":       lastSynced,
+		"yad2_auth_configured": os.Getenv("CARS_IL_YAD2_COOKIE") != "",
+		"source":               client.SourceYad2,
+		"read_only":            true,
 	}, nil
 }

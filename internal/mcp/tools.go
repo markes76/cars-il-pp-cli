@@ -12,8 +12,8 @@ func RegisterTools() []Tool {
 
 func ToolList() []Tool {
 	return []Tool{
-		{Name: "context", Description: "Returns object describing the Israeli used-car market intelligence context, supported sources, Hebrew handling, and when to call sync before analytics. Call this first when planning an agent workflow.", InputSchema: objectSchema()},
-		{Name: "search", Description: "Returns array of unified car listings from local cache or live Yad2/AutoTrader adapters. Supports Hebrew and English make/model aliases, price, mileage, fuel, gear, city, region, and source filters.", InputSchema: objectSchema()},
+		{Name: "context", Description: "Returns object describing the Yad2 Israeli used-car market intelligence context, Hebrew handling, and when to call sync before analytics. Call this first when planning an agent workflow.", InputSchema: objectSchema()},
+		{Name: "search", Description: "Returns array of Yad2 car listings from local cache or the live Yad2 adapter. Supports Hebrew and English make/model aliases, price, mileage, fuel, gear, city, and region filters.", InputSchema: objectSchema()},
 		{Name: "sync", Description: "Returns object with sync counts after fetching read-only live listings into SQLite. Requires conservative limits and stores price history for later market and deal tools.", InputSchema: objectSchema()},
 		{Name: "listings_get", Description: "Returns object with one full listing, including Hebrew description, image URLs, test expiry, owner count, and source URL.", InputSchema: objectSchema()},
 		{Name: "market", Description: "Returns object with local aggregate market stats. Requires sync first so median price, dealer premium, mileage averages, and days-on-market are computed from SQLite.", InputSchema: objectSchema()},
@@ -38,7 +38,7 @@ func compareSchema() map[string]interface{} {
 		"properties": map[string]interface{}{
 			"ids": map[string]interface{}{
 				"type":        "array",
-				"description": "Listing IDs to compare, up to five. Example: [\"yad2-1234\", \"autotrader-9012\"].",
+				"description": "Yad2 listing IDs to compare, up to five. Example: [\"yad2-1234\", \"yad2-5678\"].",
 				"items":       map[string]interface{}{"type": "string"},
 				"minItems":    1,
 				"maxItems":    5,
@@ -65,10 +65,10 @@ func compareSchema() map[string]interface{} {
 
 func handleContext() map[string]interface{} {
 	return map[string]interface{}{
-		"sources":  []string{"yad2", "autotrader"},
+		"sources":  []string{"yad2"},
 		"language": "he",
 		"currency": "ILS",
-		"note":     "AutoTrader IL currently exposes a WordPress services site, not a listing catalogue.",
+		"note":     "This build is Yad2-only.",
 	}
 }
 

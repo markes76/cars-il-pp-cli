@@ -14,7 +14,7 @@ func addCompare(root *cobra.Command, app *App) {
 	cmd := &cobra.Command{
 		Use:     "compare",
 		Short:   "Compare up to five listings side by side",
-		Example: "  cars-il compare --ids yad2-1234,yad2-5678,autotrader-9012 --data-source local",
+		Example: "  cars-il compare --ids yad2-1234,yad2-5678 --data-source local",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			parts := splitCSV(ids)
 			if len(parts) == 0 {

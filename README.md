@@ -1,16 +1,16 @@
 # cars-il-pp-cli
 
-Read-only Israeli used-car market intelligence CLI and MCP server for Yad2 Cars, with a guarded AutoTrader IL adapter.
+Read-only Israeli used-car market intelligence CLI and MCP server for Yad2 Cars.
 
 `cars-il-pp-cli` is built around one idea: used-car listings are market signals. Prices, mileage, ownership count, listing age, and Hebrew seller text can show buyer demand and seller urgency before official market data catches up.
 
-> Current status: Printing Press scorecard Grade A, 88/100. Yad2 live search and local sync were smoke-tested successfully on 2026-05-17. AutoTrader IL is reachable, but the current public `autotrader.co.il` site is a WordPress import/services site, not a public classifieds catalogue, so the adapter returns `SOURCE_UNAVAILABLE` instead of fabricating listings.
+> Current status: Printing Press scorecard Grade A. Yad2 live search and local sync were smoke-tested successfully on 2026-05-17. This build is intentionally Yad2-only.
 
 ## עברית
 
 `cars-il-pp-cli` הוא כלי CLI ושרת MCP לקריאת מודעות רכב משומש בישראל בצורה בטוחה וקריאה בלבד. הכלי עובד היום מול יד2, שומר נתונים בעברית ב-SQLite, ומחשב תובנות כמו מחיר שוק, ציון עסקה, מודעות ישנות, היסטוריית מחיר וחום שוק.
 
-סטטוס נוכחי: הכלי קיבל Grade A בציון Printing Press עם 88/100. חיפוש חי ביד2 וסנכרון מקומי נבדקו בהצלחה ב-17 במאי 2026. אתר AutoTrader IL הנוכחי אינו מציג קטלוג מודעות ציבורי אלא אתר שירותי יבוא/טרייד, ולכן הכלי מחזיר `SOURCE_UNAVAILABLE` עבור המקור הזה.
+סטטוס נוכחי: הכלי קיבל Grade A בציון Printing Press. חיפוש חי ביד2 וסנכרון מקומי נבדקו בהצלחה ב-17 במאי 2026. הגרסה הנוכחית מיועדת ליד2 בלבד.
 
 ## What You Can Do
 
@@ -200,7 +200,7 @@ Global flags:
 --no-input
 --no-color
 --data-source auto|local|live
---source yad2|autotrader|all
+--source yad2
 --limit N
 --output-file PATH
 --db PATH
@@ -221,8 +221,6 @@ export CARS_IL_YAD2_COOKIE='paste-cookie-here'
 ```
 
 Do not commit cookies. Do not paste cookies into issues, pull requests, or chat logs. Cookies are session credentials.
-
-AutoTrader cookie support exists as `CARS_IL_AUTOTRADER_COOKIE`, but the current public site does not expose a classifieds listing surface.
 
 ## Database
 
@@ -277,7 +275,7 @@ The CLI remains the better interface for long-running watch workflows.
 
 ### Claude Desktop Setup
 
-This MCP server uses stdio. Claude launches it as a local subprocess, and the server only exposes read-only remote operations. `sync` writes to your local SQLite cache but does not write to Yad2 or AutoTrader.
+This MCP server uses stdio. Claude launches it as a local subprocess, and the server only exposes read-only remote operations. `sync` writes to your local SQLite cache but does not write to Yad2.
 
 1. Build, install, or use the already-built MCP binary.
 
@@ -310,8 +308,7 @@ open "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
       "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
       "args": [],
       "env": {
-        "CARS_IL_YAD2_COOKIE": "",
-        "CARS_IL_AUTOTRADER_COOKIE": ""
+        "CARS_IL_YAD2_COOKIE": ""
       }
     }
   }
@@ -338,8 +335,7 @@ claude mcp add-json cars-il '{
   "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
   "args": [],
   "env": {
-    "CARS_IL_YAD2_COOKIE": "",
-    "CARS_IL_AUTOTRADER_COOKIE": ""
+    "CARS_IL_YAD2_COOKIE": ""
   }
 }'
 ```
@@ -362,7 +358,7 @@ claude mcp list
 Example safe prompt:
 
 ```text
-Use cars-il MCP to search Yad2 live for up to 5 hybrid cars under 60000 ILS. Do not use AutoTrader unless doctor says it has a listing catalogue. Summarize price, mileage, city, hand, and URL.
+Use cars-il MCP to search Yad2 live for up to 5 hybrid cars under 60000 ILS. Summarize price, mileage, city, hand, and URL.
 ```
 
 ## Exit Codes
@@ -370,7 +366,7 @@ Use cars-il MCP to search Yad2 live for up to 5 hybrid cars under 60000 ILS. Do 
 ```text
 0 success
 2 invalid arguments
-3 not found or source unavailable
+3 not found
 4 auth failure
 5 upstream API error
 7 rate limited
@@ -380,7 +376,7 @@ Use cars-il MCP to search Yad2 live for up to 5 hybrid cars under 60000 ILS. Do 
 Errors are JSON on stderr:
 
 ```json
-{"error":{"code":"SOURCE_UNAVAILABLE","message":"AutoTrader IL currently exposes WordPress service pages, not a public used-car listing catalogue"}}
+{"error":{"code":"INVALID_ARGUMENTS","message":"this build supports Yad2 only; use --source yad2 or omit --source"}}
 ```
 
 ## Safety And Ethics
@@ -391,11 +387,10 @@ Errors are JSON on stderr:
 - No hardcoded secrets.
 - 10-second request timeout.
 - Conservative request cadence and backoff on rate limits.
-- Users are responsible for complying with each site's terms of service.
+- Users are responsible for complying with Yad2's terms of service.
 
 ## Current Limitations
 
-- AutoTrader IL currently does not expose a public used-car listing catalogue at `autotrader.co.il`.
 - Yad2 has no public API; the adapter depends on public browser-rendered HTML payloads and may need updates if Yad2 changes its Next.js data shape.
 - Some live filters are applied client-side after fetching public search pages. For serious analysis, sync a wider cohort and run local filters.
 - Price history becomes useful only after repeated sync runs.

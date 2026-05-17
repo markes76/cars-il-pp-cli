@@ -136,17 +136,7 @@ DB=/tmp/cars-il.db
 ./cars-il-pp-cli --db "$DB" compare --ids yad2-1234,yad2-5678 --data-source local
 ```
 
-## 8. מה קורה עם AutoTrader IL
-
-נכון ל-17 במאי 2026, האתר `https://autotrader.co.il/` הוא אתר WordPress של שירותי יבוא/טרייד ולא קטלוג מודעות רכב ציבורי. לכן הכלי מחזיר:
-
-```json
-{"error":{"code":"SOURCE_UNAVAILABLE","message":"AutoTrader IL currently exposes WordPress service pages, not a public used-car listing catalogue"}}
-```
-
-זו התנהגות צפויה ולא קריסה.
-
-## 9. תקלות נפוצות
+## 8. תקלות נפוצות
 
 מסד הנתונים ריק:
 
@@ -174,7 +164,7 @@ rm -f "$DB" "$DB-shm" "$DB-wal"
 ./cars-il-pp-cli --db "$DB" doctor --json
 ```
 
-## 10. שימוש כשרת MCP עבור Claude
+## 9. שימוש כשרת MCP עבור Claude
 
 בנייה, התקנה, או שימוש בבינארי שכבר נבנה.
 
@@ -207,8 +197,7 @@ $HOME/Library/Application Support/Claude/claude_desktop_config.json
       "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
       "args": [],
       "env": {
-        "CARS_IL_YAD2_COOKIE": "",
-        "CARS_IL_AUTOTRADER_COOKIE": ""
+        "CARS_IL_YAD2_COOKIE": ""
       }
     }
   }
@@ -229,10 +218,9 @@ claude mcp add-json cars-il '{
   "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
   "args": [],
   "env": {
-    "CARS_IL_YAD2_COOKIE": "",
-    "CARS_IL_AUTOTRADER_COOKIE": ""
+    "CARS_IL_YAD2_COOKIE": ""
   }
 }'
 ```
 
-בטיחות: שרת ה-MCP מבצע קריאות קריאה בלבד מול האתרים. הפקודה `sync` כותבת רק למסד SQLite מקומי אצלכם במחשב.
+בטיחות: שרת ה-MCP מבצע קריאות קריאה בלבד מול יד2. הפקודה `sync` כותבת רק למסד SQLite מקומי אצלכם במחשב.
