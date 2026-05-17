@@ -300,6 +300,9 @@ func extractIDs(value interface{}, depth int) []string {
 				}
 			}
 		}
+		if ids := extractIndexedIDs(v); len(ids) > 0 {
+			return ids
+		}
 		for _, key := range []string{"input", "arguments", "params", "payload"} {
 			if nested, ok := v[key]; ok {
 				if ids := extractIDs(nested, depth+1); len(ids) > 0 {
@@ -309,6 +312,45 @@ func extractIDs(value interface{}, depth int) []string {
 		}
 	}
 	return nil
+}
+
+func extractIndexedIDs(values map[string]interface{}) []string {
+	type indexedID struct {
+		index int
+		id    string
+	}
+	var indexed []indexedID
+	for key, value := range values {
+		index, ok := indexedIDKey(key)
+		if !ok {
+			continue
+		}
+		for _, id := range extractIDValues(value) {
+			indexed = append(indexed, indexedID{index: index, id: id})
+		}
+	}
+	sort.SliceStable(indexed, func(i, j int) bool { return indexed[i].index < indexed[j].index })
+	var ids []string
+	for _, item := range indexed {
+		ids = append(ids, item.id)
+	}
+	return ids
+}
+
+func indexedIDKey(key string) (int, bool) {
+	for _, prefix := range []string{"ids", "listing_ids", "listingIds"} {
+		for _, format := range []string{prefix + "[", prefix + ".", prefix + "_"} {
+			if !strings.HasPrefix(key, format) {
+				continue
+			}
+			raw := strings.TrimSuffix(strings.TrimPrefix(key, format), "]")
+			var index int
+			if _, err := fmt.Sscanf(raw, "%d", &index); err == nil {
+				return index, true
+			}
+		}
+	}
+	return 0, false
 }
 
 func extractIDValues(value interface{}) []string {

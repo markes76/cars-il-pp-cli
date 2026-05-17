@@ -18,6 +18,8 @@ func TestParseCompareIDs(t *testing.T) {
 		{name: "ids string csv", raw: `{"ids":"yad2-a, yad2-b"}`, want: []string{"yad2-a", "yad2-b"}},
 		{name: "nested input", raw: `{"input":{"ids":["yad2-a","yad2-b"]}}`, want: []string{"yad2-a", "yad2-b"}},
 		{name: "single id", raw: `{"id":"yad2-a"}`, want: []string{"yad2-a"}},
+		{name: "indexed ids", raw: `{"ids[1]":"yad2-b","ids[0]":"yad2-a"}`, want: []string{"yad2-a", "yad2-b"}},
+		{name: "indexed listing ids", raw: `{"listing_ids.0":"yad2-a","listing_ids.1":"yad2-b"}`, want: []string{"yad2-a", "yad2-b"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
