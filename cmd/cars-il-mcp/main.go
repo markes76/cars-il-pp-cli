@@ -163,26 +163,15 @@ func callTool(service commands.Service, name string, raw json.RawMessage) (inter
 		sort.SliceStable(out, func(i, j int) bool { return out[i].DaysOnMarket > out[j].DaysOnMarket })
 		return out, nil
 	case "compare":
-		var in struct {
-			IDs    []string `json:"ids"`
-			IDsCSV string   `json:"ids_csv"`
+		ids, err := parseCompareIDs(raw)
+		if err != nil {
+			return nil, err
 		}
-		_ = json.Unmarshal(raw, &in)
-		if len(in.IDs) == 0 && in.IDsCSV != "" {
-			for _, part := range strings.Split(in.IDsCSV, ",") {
-				if trimmed := strings.TrimSpace(part); trimmed != "" {
-					in.IDs = append(in.IDs, trimmed)
-				}
-			}
-		}
-		if len(in.IDs) == 0 {
-			return nil, client.InvalidArgs("compare requires ids")
-		}
-		if len(in.IDs) > 5 {
+		if len(ids) > 5 {
 			return nil, client.InvalidArgs("compare supports up to 5 listings")
 		}
 		var rows []client.Listing
-		for _, id := range in.IDs {
+		for _, id := range ids {
 			row, err := service.Get(id, params.DataSource)
 			if err != nil {
 				return nil, err
@@ -281,6 +270,123 @@ func mcpText(text string, isError bool) toolResult {
 
 func rpcError(code int, message string) map[string]interface{} {
 	return map[string]interface{}{"code": code, "message": message}
+}
+
+func parseCompareIDs(raw json.RawMessage) ([]string, error) {
+	var root interface{}
+	if len(raw) == 0 || string(raw) == "null" {
+		return nil, client.InvalidArgs("compare requires ids. Accepted inputs: ids or listing_ids as an array, ids_csv as a comma-separated string")
+	}
+	if err := json.Unmarshal(raw, &root); err != nil {
+		return nil, client.InvalidArgs("compare arguments must be a JSON object")
+	}
+	ids := extractIDs(root, 0)
+	if len(ids) == 0 {
+		return nil, client.InvalidArgs(fmt.Sprintf("compare requires ids. Accepted inputs: ids/listing_ids as an array, ids_csv as a comma-separated string, or id/listing_id for one listing. Received keys: %s", receivedKeys(root)))
+	}
+	return uniqueStrings(ids), nil
+}
+
+func extractIDs(value interface{}, depth int) []string {
+	if depth > 3 {
+		return nil
+	}
+	switch v := value.(type) {
+	case map[string]interface{}:
+		for _, key := range []string{"ids", "listing_ids", "listingIds", "ids_csv", "id", "listing_id", "listingId"} {
+			if candidate, ok := v[key]; ok {
+				if ids := extractIDValues(candidate); len(ids) > 0 {
+					return ids
+				}
+			}
+		}
+		for _, key := range []string{"input", "arguments", "params", "payload"} {
+			if nested, ok := v[key]; ok {
+				if ids := extractIDs(nested, depth+1); len(ids) > 0 {
+					return ids
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func extractIDValues(value interface{}) []string {
+	switch v := value.(type) {
+	case string:
+		return splitIDs(v)
+	case []interface{}:
+		var ids []string
+		for _, item := range v {
+			if s, ok := item.(string); ok {
+				ids = append(ids, splitIDs(s)...)
+			}
+		}
+		return ids
+	default:
+		return nil
+	}
+}
+
+func splitIDs(value string) []string {
+	trimmed := strings.TrimSpace(value)
+	if trimmed == "" {
+		return nil
+	}
+	if strings.HasPrefix(trimmed, "[") {
+		var array []string
+		if err := json.Unmarshal([]byte(trimmed), &array); err == nil {
+			return array
+		}
+	}
+	parts := strings.Split(trimmed, ",")
+	var ids []string
+	for _, part := range parts {
+		if id := strings.TrimSpace(part); id != "" {
+			ids = append(ids, id)
+		}
+	}
+	return ids
+}
+
+func uniqueStrings(values []string) []string {
+	seen := map[string]bool{}
+	var out []string
+	for _, value := range values {
+		if value == "" || seen[value] {
+			continue
+		}
+		seen[value] = true
+		out = append(out, value)
+	}
+	return out
+}
+
+func receivedKeys(value interface{}) string {
+	keys := collectKeys(value, 0)
+	if len(keys) == 0 {
+		return "<none>"
+	}
+	sort.Strings(keys)
+	return strings.Join(keys, ", ")
+}
+
+func collectKeys(value interface{}, depth int) []string {
+	if depth > 2 {
+		return nil
+	}
+	m, ok := value.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	var keys []string
+	for key, nested := range m {
+		keys = append(keys, key)
+		for _, nestedKey := range collectKeys(nested, depth+1) {
+			keys = append(keys, key+"."+nestedKey)
+		}
+	}
+	return keys
 }
 
 func doctor(service commands.Service) (map[string]interface{}, error) {

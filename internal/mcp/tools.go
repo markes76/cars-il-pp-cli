@@ -20,7 +20,7 @@ func ToolList() []Tool {
 		{Name: "deal", Description: "Returns object scoring a listing against local market medians using price, mileage, days-on-market, and owner count. Requires sync first for useful comparison.", InputSchema: objectSchema()},
 		{Name: "price_history", Description: "Returns array of observed price points for one listing. Requires at least one sync and becomes more useful after repeated syncs.", InputSchema: objectSchema()},
 		{Name: "stale", Description: "Returns array of local listings whose days-on-market suggests seller motivation. Requires sync first and supports the same search filters.", InputSchema: objectSchema()},
-		{Name: "compare", Description: "Returns array of up to five listings for side-by-side comparison by an agent or UI client.", InputSchema: objectSchema()},
+		{Name: "compare", Description: "Returns array of up to five listings for side-by-side comparison by an agent or UI client. Pass ids as an array; listing_ids and ids_csv are accepted for compatibility.", InputSchema: compareSchema()},
 		{Name: "depreciation", Description: "Returns array describing average price by model year for a local make/model cohort. Requires enough synced listings to produce a meaningful curve.", InputSchema: objectSchema()},
 		{Name: "market_heat", Description: "Returns array of make/model cohorts sorted by average days-on-market so agents can identify fast-moving Israeli car segments.", InputSchema: objectSchema()},
 		{Name: "doctor", Description: "Returns object with connectivity, auth/config, version, and SQLite store health for troubleshooting before search or sync.", InputSchema: objectSchema()},
@@ -29,6 +29,38 @@ func ToolList() []Tool {
 
 func objectSchema() map[string]interface{} {
 	return map[string]interface{}{"type": "object", "additionalProperties": true}
+}
+
+func compareSchema() map[string]interface{} {
+	return map[string]interface{}{
+		"type":                 "object",
+		"additionalProperties": true,
+		"properties": map[string]interface{}{
+			"ids": map[string]interface{}{
+				"type":        "array",
+				"description": "Listing IDs to compare, up to five. Example: [\"yad2-1234\", \"autotrader-9012\"].",
+				"items":       map[string]interface{}{"type": "string"},
+				"minItems":    1,
+				"maxItems":    5,
+			},
+			"listing_ids": map[string]interface{}{
+				"type":        "array",
+				"description": "Alias for ids, accepted for compatibility.",
+				"items":       map[string]interface{}{"type": "string"},
+				"minItems":    1,
+				"maxItems":    5,
+			},
+			"ids_csv": map[string]interface{}{
+				"type":        "string",
+				"description": "Comma-separated listing IDs, accepted for clients that cannot send arrays.",
+			},
+			"data_source": map[string]interface{}{
+				"type":        "string",
+				"description": "auto, local, or live. Defaults to auto.",
+				"enum":        []string{"auto", "local", "live"},
+			},
+		},
+	}
 }
 
 func handleContext() map[string]interface{} {
