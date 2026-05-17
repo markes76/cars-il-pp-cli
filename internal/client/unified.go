@@ -13,28 +13,28 @@ const (
 )
 
 type Listing struct {
-	ID               string   `json:"id"`
-	Source           string   `json:"source"`
-	Make             string   `json:"make"`
-	Model            string   `json:"model"`
+	ID               string      `json:"id"`
+	Source           string      `json:"source"`
+	Make             string      `json:"make"`
+	Model            string      `json:"model"`
 	Year             VehicleYear `json:"year"`
 	Mileage          MileageKM   `json:"mileage"`
 	Price            PriceILS    `json:"price"`
-	City             string   `json:"city"`
-	Region           string   `json:"region"`
-	FuelType         string   `json:"fuel_type"`
-	GearType         string   `json:"gear_type"`
-	Color            string   `json:"color"`
-	Hand             OwnerHand `json:"hand"`
-	IsDealer         bool     `json:"is_dealer"`
-	TestExpiry       string   `json:"test_expiry"`
-	Description      string   `json:"description"`
-	ImageURLs        []string `json:"image_urls"`
-	URL              string   `json:"url"`
-	FirstSeenAt      string   `json:"first_seen_at"`
-	LastSeenAt       string   `json:"last_seen_at"`
-	PriceAtFirstSeen PriceILS `json:"price_at_first_seen"`
-	DaysOnMarket     int      `json:"days_on_market"`
+	City             string      `json:"city"`
+	Region           string      `json:"region"`
+	FuelType         string      `json:"fuel_type"`
+	GearType         string      `json:"gear_type"`
+	Color            string      `json:"color"`
+	Hand             OwnerHand   `json:"hand"`
+	IsDealer         bool        `json:"is_dealer"`
+	TestExpiry       string      `json:"test_expiry"`
+	Description      string      `json:"description"`
+	ImageURLs        []string    `json:"image_urls"`
+	URL              string      `json:"url"`
+	FirstSeenAt      string      `json:"first_seen_at"`
+	LastSeenAt       string      `json:"last_seen_at"`
+	PriceAtFirstSeen PriceILS    `json:"price_at_first_seen"`
+	DaysOnMarket     int         `json:"days_on_market"`
 }
 
 type PricePoint struct {
@@ -145,7 +145,7 @@ var makeAliases = map[string]string{
 
 var modelAliases = map[string]string{
 	"corolla": "קורולה",
-	"קורולה": "קורולה",
+	"קורולה":  "קורולה",
 	"civic":   "סיוויק",
 	"סיוויק":  "סיוויק",
 	"cx-5":    "CX-5",

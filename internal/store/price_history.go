@@ -1,6 +1,6 @@
 package store
 
-import "github.com/mvanhorn/cars-il-pp-cli/internal/client"
+import "github.com/markes76/cars-il-pp-cli/internal/client"
 
 func (db *DB) RecordPrice(listingID string, price int, recordedAt string) error {
 	if recordedAt == "" {

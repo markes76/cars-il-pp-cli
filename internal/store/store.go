@@ -3,7 +3,7 @@ package store
 import (
 	"database/sql"
 
-	"github.com/mvanhorn/cars-il-pp-cli/internal/client"
+	"github.com/markes76/cars-il-pp-cli/internal/client"
 )
 
 const StoreSchemaVersion = 1

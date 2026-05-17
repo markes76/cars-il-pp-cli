@@ -35,6 +35,13 @@ go build -o cars-il-pp-cli ./cmd/cars-il-pp-cli
 go build -o cars-il-pp-mcp ./cmd/cars-il-mcp
 ```
 
+Or install directly with Go:
+
+```bash
+go install github.com/markes76/cars-il-pp-cli/cmd/cars-il-pp-cli@latest
+go install github.com/markes76/cars-il-pp-cli/cmd/cars-il-mcp@latest
+```
+
 Local build paths from this Printing Press run:
 
 ```bash
@@ -262,6 +269,88 @@ doctor
 
 The CLI remains the better interface for long-running watch workflows.
 
+### Claude Desktop Setup
+
+This MCP server uses stdio. Claude launches it as a local subprocess, and the server only exposes read-only remote operations. `sync` writes to your local SQLite cache but does not write to Yad2 or AutoTrader.
+
+1. Build or install the MCP binary:
+
+```bash
+go install github.com/markes76/cars-il-pp-cli/cmd/cars-il-mcp@latest
+which cars-il-mcp
+```
+
+2. On macOS, edit Claude Desktop's config file:
+
+```bash
+open "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+```
+
+3. Add this server entry. Replace the command path with the output of `which cars-il-mcp` if needed:
+
+```json
+{
+  "mcpServers": {
+    "cars-il": {
+      "type": "stdio",
+      "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
+      "args": [],
+      "env": {
+        "CARS_IL_YAD2_COOKIE": "",
+        "CARS_IL_AUTOTRADER_COOKIE": ""
+      }
+    }
+  }
+}
+```
+
+4. Restart Claude Desktop.
+
+5. Ask Claude:
+
+```text
+Use the cars-il MCP. First call context, then doctor, then search Yad2 for 5 Toyota Corolla listings.
+```
+
+If you do not want cookies in Claude Desktop config, leave the env values empty. Most current Yad2 live search tests worked without cookies.
+
+### Claude Code Setup
+
+Claude Code supports adding stdio MCP servers from JSON. The official docs show the same `type`, `command`, `args`, and `env` shape for stdio servers.
+
+```bash
+claude mcp add-json cars-il '{
+  "type": "stdio",
+  "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
+  "args": [],
+  "env": {
+    "CARS_IL_YAD2_COOKIE": "",
+    "CARS_IL_AUTOTRADER_COOKIE": ""
+  }
+}'
+```
+
+Then verify:
+
+```bash
+claude mcp list
+```
+
+### MCP Safety Notes
+
+- Remote target-site traffic is GET-only.
+- No phone numbers are extracted or stored.
+- No account pages are scraped.
+- Cookies are optional and passed only via environment variables.
+- `watch` is intentionally not run as a long-lived MCP tool; use the CLI for background polling.
+- Keep `--limit` small in prompts when asking Claude to search live data.
+
+Example safe prompt:
+
+```text
+Use cars-il MCP to search Yad2 live for up to 5 hybrid cars under 60000 ILS. Do not use AutoTrader unless doctor says it has a listing catalogue. Summarize price, mileage, city, hand, and URL.
+```
+
 ## Exit Codes
 
 ```text
@@ -301,4 +390,3 @@ Errors are JSON on stderr:
 
 - [English how-to guide](docs/HOW_TO_USE.en.md)
 - [מדריך שימוש בעברית](docs/HOW_TO_USE.he.md)
-

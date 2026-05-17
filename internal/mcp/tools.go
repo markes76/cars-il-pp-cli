@@ -33,16 +33,16 @@ func objectSchema() map[string]interface{} {
 
 func handleContext() map[string]interface{} {
 	return map[string]interface{}{
-		"sources": []string{"yad2", "autotrader"},
+		"sources":  []string{"yad2", "autotrader"},
 		"language": "he",
 		"currency": "ILS",
-		"note": "AutoTrader IL currently exposes a WordPress services site, not a listing catalogue.",
+		"note":     "AutoTrader IL currently exposes a WordPress services site, not a listing catalogue.",
 	}
 }
 
-func handleSearch()  {}
-func handleSync()    {}
-func handleSQL()     {}
+func handleSearch() {}
+func handleSync()   {}
+func handleSQL()    {}
 
 var ToolHandlers = map[string]interface{}{
 	"context": handleContext,

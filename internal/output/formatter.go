@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/markes76/cars-il-pp-cli/internal/client"
 	"github.com/mattn/go-runewidth"
-	"github.com/mvanhorn/cars-il-pp-cli/internal/client"
 	"golang.org/x/term"
 )
 

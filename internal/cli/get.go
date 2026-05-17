@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"github.com/mvanhorn/cars-il-pp-cli/internal/client"
+	"github.com/markes76/cars-il-pp-cli/internal/client"
 	"github.com/spf13/cobra"
 )
 

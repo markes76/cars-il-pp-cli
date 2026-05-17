@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mvanhorn/cars-il-pp-cli/internal/client"
+	"github.com/markes76/cars-il-pp-cli/internal/client"
 )
 
 func TestFormatterPreservesHebrewAndJSON(t *testing.T) {

@@ -1,4 +1,4 @@
-module github.com/mvanhorn/cars-il-pp-cli
+module github.com/markes76/cars-il-pp-cli
 
 go 1.24.0
 

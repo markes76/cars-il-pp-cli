@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/mvanhorn/cars-il-pp-cli/internal/cli"
+	"github.com/markes76/cars-il-pp-cli/internal/cli"
 )
 
 func main() {

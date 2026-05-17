@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/mvanhorn/cars-il-pp-cli/internal/client"
-	"github.com/mvanhorn/cars-il-pp-cli/internal/store"
+	"github.com/markes76/cars-il-pp-cli/internal/client"
+	"github.com/markes76/cars-il-pp-cli/internal/store"
 )
 
 type Service struct {

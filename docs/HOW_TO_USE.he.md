@@ -174,3 +174,57 @@ rm -f "$DB" "$DB-shm" "$DB-wal"
 ./cars-il-pp-cli --db "$DB" doctor --json
 ```
 
+## 10. שימוש כשרת MCP עבור Claude
+
+בנייה או התקנה:
+
+```bash
+go install github.com/markes76/cars-il-pp-cli/cmd/cars-il-mcp@latest
+which cars-il-mcp
+```
+
+ב-macOS קובץ ההגדרות של Claude Desktop נמצא בדרך כלל כאן:
+
+```bash
+$HOME/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+להוסיף:
+
+```json
+{
+  "mcpServers": {
+    "cars-il": {
+      "type": "stdio",
+      "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
+      "args": [],
+      "env": {
+        "CARS_IL_YAD2_COOKIE": "",
+        "CARS_IL_AUTOTRADER_COOKIE": ""
+      }
+    }
+  }
+}
+```
+
+לאחר מכן מפעילים מחדש את Claude Desktop ושואלים:
+
+```text
+Use the cars-il MCP. Call context and doctor, then search Yad2 live for 5 Toyota Corolla listings.
+```
+
+עבור Claude Code:
+
+```bash
+claude mcp add-json cars-il '{
+  "type": "stdio",
+  "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
+  "args": [],
+  "env": {
+    "CARS_IL_YAD2_COOKIE": "",
+    "CARS_IL_AUTOTRADER_COOKIE": ""
+  }
+}'
+```
+
+בטיחות: שרת ה-MCP מבצע קריאות קריאה בלבד מול האתרים. הפקודה `sync` כותבת רק למסד SQLite מקומי אצלכם במחשב.

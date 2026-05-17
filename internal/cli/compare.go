@@ -4,8 +4,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mvanhorn/cars-il-pp-cli/internal/client"
-	"github.com/mvanhorn/cars-il-pp-cli/internal/output"
+	"github.com/markes76/cars-il-pp-cli/internal/client"
+	"github.com/markes76/cars-il-pp-cli/internal/output"
 	"github.com/spf13/cobra"
 )
 

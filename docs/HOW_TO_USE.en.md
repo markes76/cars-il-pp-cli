@@ -168,3 +168,57 @@ rm -f "$DB" "$DB-shm" "$DB-wal"
 ./cars-il-pp-cli --db "$DB" doctor --json
 ```
 
+## 10. Use It As A Claude MCP Server
+
+Build or install:
+
+```bash
+go install github.com/markes76/cars-il-pp-cli/cmd/cars-il-mcp@latest
+which cars-il-mcp
+```
+
+Claude Desktop on macOS reads local MCP subprocess configuration from:
+
+```bash
+$HOME/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+Add:
+
+```json
+{
+  "mcpServers": {
+    "cars-il": {
+      "type": "stdio",
+      "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
+      "args": [],
+      "env": {
+        "CARS_IL_YAD2_COOKIE": "",
+        "CARS_IL_AUTOTRADER_COOKIE": ""
+      }
+    }
+  }
+}
+```
+
+Restart Claude Desktop. Then ask:
+
+```text
+Use the cars-il MCP. Call context and doctor, then search Yad2 live for 5 Toyota Corolla listings.
+```
+
+For Claude Code:
+
+```bash
+claude mcp add-json cars-il '{
+  "type": "stdio",
+  "command": "/Users/YOUR_USER/go/bin/cars-il-mcp",
+  "args": [],
+  "env": {
+    "CARS_IL_YAD2_COOKIE": "",
+    "CARS_IL_AUTOTRADER_COOKIE": ""
+  }
+}'
+```
+
+Safety: the MCP server is read-only against remote sites. `sync` writes only to the local SQLite cache.
