@@ -1,0 +1,25 @@
+# Build artifacts
+/cars-il-pp-cli
+/cars-il-pp-mcp
+*-dogfood
+dist/
+
+# Local databases and generated runtime files
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+dogfood-results.json
+scorecard-results.json
+
+# Browser/debug capture output
+*.har
+*.debug.html
+debug-html/
+.playwright-mcp/
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/

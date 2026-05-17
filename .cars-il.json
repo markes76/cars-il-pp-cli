@@ -1,0 +1,19 @@
+{
+  "cli": "cars-il-pp-cli",
+  "mcp": "cars-il-pp-mcp",
+  "version": "1.0.0",
+  "printed_at": "2026-05-17T14:09:21Z",
+  "sources": ["yad2.co.il", "autotrader.co.il"],
+  "noi": "Yad2 Cars + AutoTrader IL isn't just a used-car listing surface. It's a real-time Israeli automotive market intelligence layer. Every listing, price change, ownership count, mileage reading, and days-on-market trace is a signal about household purchasing power, seller urgency, and local economic sentiment before official indices can see it.",
+  "scorecard_grade": "A",
+  "scorecard_score": 88,
+  "build_path": "browser-sniff",
+  "language": "he",
+  "currency": "ILS",
+  "shipcheck_status": "passed-with-note",
+  "shipcheck_notes": [
+    "Official Printing Press scorecard reached Grade A at 88/100.",
+    "Yad2 live smoke test succeeds without cookies for read-only listing search and sync.",
+    "AutoTrader IL currently exposes a WordPress import/services site, not a public used-car listing catalogue; the adapter returns SOURCE_UNAVAILABLE instead of fabricating listings."
+  ]
+}

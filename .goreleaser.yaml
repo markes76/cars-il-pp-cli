@@ -1,0 +1,26 @@
+version: 2
+
+project_name: cars-il
+
+builds:
+  - id: cars-il-pp-cli
+    main: ./cmd/cars-il
+    binary: cars-il-pp-cli
+    goos: [darwin]
+    goarch: [arm64]
+    env:
+      - CGO_ENABLED=0
+  - id: cars-il-pp-mcp
+    main: ./cmd/cars-il-mcp
+    binary: cars-il-pp-mcp
+    goos: [darwin]
+    goarch: [arm64]
+    env:
+      - CGO_ENABLED=0
+
+archives:
+  - id: cars-il
+    formats: [tar.gz]
+
+checksum:
+  name_template: "checksums.txt"
