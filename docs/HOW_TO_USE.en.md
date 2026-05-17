@@ -170,11 +170,19 @@ rm -f "$DB" "$DB-shm" "$DB-wal"
 
 ## 10. Use It As A Claude MCP Server
 
-Build or install:
+Build, install, or use the already-built MCP binary.
+
+If Go is installed:
 
 ```bash
 go install github.com/markes76/cars-il-pp-cli/cmd/cars-il-mcp@latest
 which cars-il-mcp
+```
+
+If `go` is not found on this Mac, use the existing Printing Press binary:
+
+```bash
+/Users/mark.s/printing-press/library/cars-il/cars-il-pp-mcp
 ```
 
 Claude Desktop on macOS reads local MCP subprocess configuration from:

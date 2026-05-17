@@ -26,7 +26,7 @@ Read-only Israeli used-car market intelligence CLI and MCP server for Yad2 Cars,
 
 ## Install
 
-From source:
+From source, you need Go installed:
 
 ```bash
 git clone https://github.com/markes76/cars-il-pp-cli.git
@@ -40,6 +40,12 @@ Or install directly with Go:
 ```bash
 go install github.com/markes76/cars-il-pp-cli/cmd/cars-il-pp-cli@latest
 go install github.com/markes76/cars-il-pp-cli/cmd/cars-il-mcp@latest
+```
+
+If `go` is not found, either install Go first or use the local binary from this Printing Press run. On this Mac, the MCP server is already available at:
+
+```bash
+/Users/mark.s/printing-press/library/cars-il/cars-il-pp-mcp
 ```
 
 Local build paths from this Printing Press run:
@@ -273,11 +279,19 @@ The CLI remains the better interface for long-running watch workflows.
 
 This MCP server uses stdio. Claude launches it as a local subprocess, and the server only exposes read-only remote operations. `sync` writes to your local SQLite cache but does not write to Yad2 or AutoTrader.
 
-1. Build or install the MCP binary:
+1. Build, install, or use the already-built MCP binary.
+
+If Go is installed:
 
 ```bash
 go install github.com/markes76/cars-il-pp-cli/cmd/cars-il-mcp@latest
 which cars-il-mcp
+```
+
+If `go` is not found on this Mac, use this existing command path instead:
+
+```bash
+/Users/mark.s/printing-press/library/cars-il/cars-il-pp-mcp
 ```
 
 2. On macOS, edit Claude Desktop's config file:

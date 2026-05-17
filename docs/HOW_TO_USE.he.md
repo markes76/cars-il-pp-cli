@@ -176,11 +176,19 @@ rm -f "$DB" "$DB-shm" "$DB-wal"
 
 ## 10. שימוש כשרת MCP עבור Claude
 
-בנייה או התקנה:
+בנייה, התקנה, או שימוש בבינארי שכבר נבנה.
+
+אם Go מותקן:
 
 ```bash
 go install github.com/markes76/cars-il-pp-cli/cmd/cars-il-mcp@latest
 which cars-il-mcp
+```
+
+אם מתקבלת השגיאה `go: command not found` במחשב הזה, משתמשים בבינארי הקיים של Printing Press:
+
+```bash
+/Users/mark.s/printing-press/library/cars-il/cars-il-pp-mcp
 ```
 
 ב-macOS קובץ ההגדרות של Claude Desktop נמצא בדרך כלל כאן:
